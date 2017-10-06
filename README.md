@@ -10,6 +10,8 @@ together using WebSockets, using an auth-based protocol.
 * [queue-protocol](https://github.com/lilezek/websocket-queue) Repository with the comm protocol, based on WebSockets.
 * Demo (this repo). It connects to a random producer and the given consumer to produce messages, and to get them back to test the system.
 
+See [this video of the usage](https://github.com/lilezek/queue-demo/blob/master/demo.ogv?raw=true).
+
 # Scalability and balance.
 The scalability and the balance of the system is based on the ease of making multiple instances of producers and consumers. Every producer
 client (demo) can connect to any producer.
@@ -86,8 +88,42 @@ Here, a demo `demo1` is connected to a producer X, and a `demo2` is listening to
 
 ## Endpoints
 
+### Consumer
+The consumer have two endpoints, based on queue-protocol.
+
+* `producer` Every producer must connect to this endpoint. It expects messages here.
+* `subscribe/:topic` Every client (demo) may connect to this endpoint to subscribe to that topic.
+
+### Producer
+The producer have an endpoint, based also on queue-protocol.
+
+* `produce` Every client (demo) may connect here to produce new messages.
+
+### Demo
+Has no endpoints.
+
 # Testing
+
+The testing is based on mocha and chai, used on node with node-ts to test using TypeScript code.
 
 ## E2E testing using mocha and chai
 
+This project have an small set of tests. These do:
+
+1. Connect to every producer to see if they are working or not.
+2. Sending a random message to a random topic to see if we can get it back unmodified.
+3. Trying to connect to every producer/consumer with a wrong PSK, and expect it to fail.
+
+In order to execute the test, the consumers and producers must be deployed, and the demo must be properly configured. Then:
+
+```
+npm test
+```
+
+over demo node will run testing.
+
 # Conclusion and future roads
+
+The lack of time didn't let me to make a better scenario. If I would have more time, I would added Amazon Elastic Beanstalk support to the 
+nodes, I would made a more secure protocol (using TLS, for instance), and I would have written unit tests for every node, plus the E2E 
+testing. 
